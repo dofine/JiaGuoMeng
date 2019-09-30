@@ -15,46 +15,46 @@ from collections import defaultdict as ddict
 
 #======= 配置：在这里输入自己的状况 =======
 Mode = 'Online'
-last_result=(('人才公寓', '木屋', '居民楼'), ('五金店', '菜市场', '便利店'), ('食品厂', '电厂', '木材厂'))
+last_result = (('平房', '钢结构房', '居民楼'), ('菜市场', '便利店'), ('食品厂', '钢铁厂'))
 
 # 在这里填写你各建筑的星数。
-OneStars = ' 零件厂 民食斋 中式小楼 人民石油 商贸中心 花园洋房 空中别墅 媒体之声 复兴公馆'
-TwoStars = ' 企鹅机械 图书城 加油站'
-TriStars = ' 平房 学校 钢铁厂 小型公寓 人才公寓 纺织厂 便利店 服装店 电厂 水厂'
-QuaStars = ' 居民楼 木屋 五金店 木材厂 食品厂 菜市场 造纸厂 钢结构房'
+OneStars = '便利店 居民楼 钢结构房 平房 菜市场 食品厂 钢铁厂 木屋 五金店 木材厂 造纸厂 纺织厂'
+TwoStars = ''
+TriStars = ''
+QuaStars = ''
 PenStars = ' '
 
 # 在这里填写你的政策加成。
 # 没加成为0，有100%加成为1，有150%加成为1.5，以此类推。
 Policy = {
-    'Global':  1+1,
-    'Online':  0,
+    'Global': 0.1,
+    'Online': 0,
     'Offline': 0,
-    'Residence': 3,
-    'Commercial': 3,
-    'Industry': 1,
-    'JiaGuoZhiGuang': 0.15+0.45
+    'Residence': 0.3,
+    'Commercial': 0,
+    'Industry': 0,
+    'JiaGuoZhiGuang': 0.65
 }
 
 # 在这里填写你的照片加成。
 # 数字的意义见上。
 Photos = {
-    'Global':  0.7,
-    'Online':  1.2,
-    'Offline': 0.7,
-    'Residence': 2.1,
-    'Commercial': 1.5,
-    'Industry': 0.9,
+    'Global': 0.25 + 0.4,
+    'Online': 0,
+    'Offline': 0,
+    'Residence': 0,
+    'Commercial': 0,
+    'Industry': 0,
 }
 
 # 在这里填写你的城市任务加成。
 # 数字的意义见上。
 QuestsGeneral = {
-    'Global':  0,
-    'Online':  0,
+    'Global': 0,
+    'Online': 0,
     'Offline': 0,
     'Residence': 0,
-    'Commercial': 0,
+    'Commercial': 0.2,
     'Industry': 0,
 }
 QuestsBuilding = {
@@ -94,27 +94,31 @@ QuestsBuilding = {
 
 commercial = '便利店 五金店 服装店 菜市场 学校 图书城 商贸中心 加油站 民食斋 媒体之声'
 residence = '木屋 居民楼 钢结构房 平房 小型公寓 人才公寓 花园洋房 中式小楼 空中别墅 复兴公馆'
-industry  = '木材厂 食品厂 造纸厂 水厂 电厂 钢铁厂 纺织厂 零件厂 企鹅机械 人民石油'
+industry = '木材厂 食品厂 造纸厂 水厂 电厂 钢铁厂 纺织厂 零件厂 企鹅机械 人民石油'
 
-class UndefinedError(Exception): pass
+
+class UndefinedError(Exception):
+    pass
+
 
 if Mode == 'Online':
-    BlackList=set(' 小型公寓 复兴公馆 水厂'.split())
+    BlackList = set('小型公寓 复兴公馆 水厂'.split())
 elif Mode == 'Offline':
-# TODO:
+    # TODO:
     raise UndefinedError('离线收益等我有空再写，真的用得到吗')
-    BlackList=set(' 小型公寓 电厂'.split())
+    BlackList = set('小型公寓 电厂'.split())
 
-ListDifference=lambda a,b: [item for item in a if not item in b]
-commercial=ListDifference(commercial.split(),BlackList)
-residence=ListDifference(residence.split(),BlackList)
-industry=ListDifference(industry.split(),BlackList)
+ListDifference = lambda a, b: [item for item in a if not item in b]
+# commercial=ListDifference(commercial.split(),BlackList)
+commercial = (set(commercial.split()) - BlackList)
+residence = ListDifference(residence.split(), BlackList)
+industry = ListDifference(industry.split(), BlackList)
 
-OneStars=ListDifference(OneStars.split(),BlackList)
-TwoStars=ListDifference(TwoStars.split(),BlackList)
-TriStars=ListDifference(TriStars.split(),BlackList)
-QuaStars=ListDifference(QuaStars.split(),BlackList)
-PenStars=ListDifference(PenStars.split(),BlackList)
+OneStars = ListDifference(OneStars.split(), BlackList)
+TwoStars = ListDifference(TwoStars.split(), BlackList)
+TriStars = ListDifference(TriStars.split(), BlackList)
+QuaStars = ListDifference(QuaStars.split(), BlackList)
+PenStars = ListDifference(PenStars.split(), BlackList)
 
 #
 star = dict()
@@ -129,28 +133,34 @@ for item in QuaStars:
 for item in PenStars:
     star[item] = 5
 
-startDict = {1:1, 2:2, 3:6, 4:24, 5:120}
+startDict = {1: 1, 2: 2, 3: 6, 4: 24, 5: 120}
 
 ######星级 * 政策 * 照片 * 任务
 start = ddict(int)
-for item in residence:#住宅
-    start[item] = (startDict[star[item]] *
-        (1+Policy['Global']+Policy['Online']+Policy['Residence']+Policy['JiaGuoZhiGuang']) *
-        (1+Photos['Global']+Photos['Online']+Photos['Residence']) *
-        (1+QuestsGeneral['Global']+QuestsGeneral['Online']+QuestsGeneral['Residence']+QuestsGeneral.get(item, 0))
-    )
-for item in commercial:#商业
-    start[item] = (startDict[star[item]] *
-        (1+Policy['Global']+Policy['Online']+Policy['Commercial']+Policy['JiaGuoZhiGuang']) *
-        (1+Photos['Global']+Photos['Online']+Photos['Commercial']) *
-        (1+QuestsGeneral['Global']+QuestsGeneral['Online']+QuestsGeneral['Commercial']+QuestsGeneral.get(item, 0))
-    )
-for item in industry:#工业
-    start[item] = (startDict[star[item]] *
-        (1+Policy['Global']+Policy['Online']+Policy['Industry']+Policy['JiaGuoZhiGuang']) *
-        (1+Photos['Global']+Photos['Online']+Photos['Industry']) *
-        (1+QuestsGeneral['Global']+QuestsGeneral['Online']+QuestsGeneral['Industry']+QuestsGeneral.get(item, 0))
-    )
+for item in residence:  #住宅
+    start[item] = (
+        startDict[star[item]] *
+        (1 + Policy['Global'] + Policy['Online'] + Policy['Residence'] +
+         Policy['JiaGuoZhiGuang']) *
+        (1 + Photos['Global'] + Photos['Online'] + Photos['Residence']) *
+        (1 + QuestsGeneral['Global'] + QuestsGeneral['Online'] +
+         QuestsGeneral['Residence'] + QuestsGeneral.get(item, 0)))
+for item in commercial:  #商业
+    start[item] = (
+        startDict[star[item]] *
+        (1 + Policy['Global'] + Policy['Online'] + Policy['Commercial'] +
+         Policy['JiaGuoZhiGuang']) *
+        (1 + Photos['Global'] + Photos['Online'] + Photos['Commercial']) *
+        (1 + QuestsGeneral['Global'] + QuestsGeneral['Online'] +
+         QuestsGeneral['Commercial'] + QuestsGeneral.get(item, 0)))
+for item in industry:  #工业
+    start[item] = (
+        startDict[star[item]] *
+        (1 + Policy['Global'] + Policy['Online'] + Policy['Industry'] +
+         Policy['JiaGuoZhiGuang']) *
+        (1 + Photos['Global'] + Photos['Online'] + Photos['Industry']) *
+        (1 + QuestsGeneral['Global'] + QuestsGeneral['Online'] +
+         QuestsGeneral['Industry'] + QuestsGeneral.get(item, 0)))
 
 # 自带调整
 start['花园洋房'] *= 1.022
@@ -176,7 +186,7 @@ buffs_100 = {
     '五金店': ['零件厂'],
     '服装店': ['纺织厂'],
     '菜市场': ['食品厂'],
-    '学校':  ['图书城'],
+    '学校': ['图书城'],
     '图书城': ['学校', '造纸厂'],
     '商贸中心': ['花园洋房'],
     '木材厂': ['木屋'],
@@ -185,8 +195,8 @@ buffs_100 = {
     '钢铁厂': ['钢结构房'],
     '纺织厂': ['服装店'],
     '零件厂': ['五金店'],
-    '企鹅机械':['零件厂'],
-    '人民石油':['加油站'],
+    '企鹅机械': ['零件厂'],
+    '人民石油': ['加油站'],
 }
 
 buffs_50 = {
@@ -196,10 +206,10 @@ buffs_50 = {
 
 bufflist_258 = [.2, .5, .8, 1.1, 1.4]
 bufflist_246 = [.2, .4, .6, .8, 1.0]
-bufflist_015 = [0.75*x for x in [.2, .4, .6, .8, 1.0]]
-bufflist_010 = [0.5*x for x in [.2, .4, .6, .8, 1.0]]
-bufflist_005 = [0.25*x for x in [.2, .4, .6, .8, 1.0]]
-bufflist_035 = [1.75*x for x in [.2, .4, .6, .8, 1.0]]
+bufflist_015 = [0.75 * x for x in [.2, .4, .6, .8, 1.0]]
+bufflist_010 = [0.5 * x for x in [.2, .4, .6, .8, 1.0]]
+bufflist_005 = [0.25 * x for x in [.2, .4, .6, .8, 1.0]]
+bufflist_035 = [1.75 * x for x in [.2, .4, .6, .8, 1.0]]
 
 buffs_com = {
     '媒体之声': bufflist_005,
@@ -223,7 +233,7 @@ buffs_ind = {
 }
 buffs_res = {
     '媒体之声': bufflist_005,
-    '企鹅机械':bufflist_010,
+    '企鹅机械': bufflist_010,
     '民食斋': bufflist_246,
     '人才公寓': bufflist_246,
     '平房': bufflist_246,
@@ -231,6 +241,7 @@ buffs_res = {
     '电厂': bufflist_258,
     '中式小楼': bufflist_035,
 }
+
 
 def calculateComb(buildings):
     buildtuple = buildings[0] + buildings[1] + buildings[2]
@@ -244,65 +255,76 @@ def calculateComb(buildings):
         if item in buffs_50:
             for buffed in buffs_50[item]:
                 if buffed in buildtuple:
-                    results[buildtuple.index(buffed)] += star[item]*0.5
+                    results[buildtuple.index(buffed)] += star[item] * 0.5
         if item in buffs_com:
-            toAdd = buffs_com[item][star[item]-1]
+            toAdd = buffs_com[item][star[item] - 1]
             results[0] += toAdd
             results[1] += toAdd
             results[2] += toAdd
         if item in buffs_ind:
-            toAdd = buffs_ind[item][star[item]-1]
+            toAdd = buffs_ind[item][star[item] - 1]
             results[3] += toAdd
             results[4] += toAdd
             results[5] += toAdd
         if item in buffs_res:
-            toAdd = buffs_res[item][star[item]-1]
+            toAdd = buffs_res[item][star[item] - 1]
             results[6] += toAdd
             results[7] += toAdd
             results[8] += toAdd
-    return (np.sum([v*results[i] for i, v in enumerate(starts)]),
-            [v*results[i]/startDict[star[buildtuple[i]]] for i, v in enumerate(starts)])
+    return (np.sum([v * results[i] for i, v in enumerate(starts)]), [
+        v * results[i] / startDict[star[buildtuple[i]]]
+        for i, v in enumerate(starts)
+    ])
+
 
 #
 results = PQ()
+
+
 #
 class Result(object):
     def __init__(self, priority, builds):
         self.priority = priority
         self.builds = builds
         return
+
     def __lt__(self, other):
         return self.priority < other.priority
+
     def __eq__(self, other):
         return self.priority == other.priority
 
-search_space=itertools.product(itertools.combinations(residence, 3), itertools.combinations(commercial, 3), itertools.combinations(industry, 3))
-search_space_size=comb(len(industry), 3)*comb(len(commercial), 3)*comb(len(residence), 3)
+
+search_space = itertools.product(itertools.combinations(residence, 3),
+                                 itertools.combinations(commercial, 3),
+                                 itertools.combinations(industry, 3))
+search_space_size = comb(len(industry), 3) * comb(len(commercial), 3) * comb(
+    len(residence), 3)
 print('Total iterations:', search_space_size)
-for item in tqdm(search_space,total=search_space_size,bar_format='{percentage:3.0f}%, {elapsed}<{remaining}|{bar}|{n_fmt}/{total_fmt}, {rate_fmt}{postfix}',ncols=70):
+for item in tqdm(
+        search_space,
+        total=search_space_size,
+        bar_format=
+        '{percentage:3.0f}%, {elapsed}<{remaining}|{bar}|{n_fmt}/{total_fmt}, {rate_fmt}{postfix}',
+        ncols=70):
     prod = calculateComb(item)
-#    if prod > Max:
-#        print('\n', prod, item)
-#        Max = prod
+    #    if prod > Max:
+    #        print('\n', prod, item)
+    #        Max = prod
     results.put(Result(-prod[0], (item, prod[1])))
     pass
 
+
 def printTable(content):
     def strwid(string):
-        return sum(
-            2 if unicodedata.east_asian_width(char) in {'W', 'F' and 'A'}
-            else 1
-            for char in string
-        )
+        return sum(2 if unicodedata.east_asian_width(char) in
+                   {'W', 'F' and 'A'} else 1 for char in string)
 
     widths = [max(strwid(cell) for cell in col) for col in zip(*content)]
     for row in content:
-        printed_cells = (
-            ' ' * (width - strwid(cell)) + cell
-            for cell, width in zip(row, widths)
-        )
+        printed_cells = (' ' * (width - strwid(cell)) + cell
+                         for cell, width in zip(row, widths))
         print(' | '.join(printed_cells))
-
 
 
 cdict = dict()
@@ -311,7 +333,9 @@ cdict = dict()
 #    print(-cdict[i].priority, cdict[i].builds)
 layout, scores = results.get().builds
 layout_list = [cell for row in layout for cell in row]
-priorities = [x*startDict[star[layout_list[i]]] for i, x in enumerate(scores)]
+priorities = [
+    x * startDict[star[layout_list[i]]] for i, x in enumerate(scores)
+]
 printTable([
     ['#'] + ['{}'.format(d) for d in range(9)],
     ['最优策略'] + layout_list,
@@ -319,6 +343,7 @@ printTable([
     ['升级优先级'] + ['{:.2f}'.format(priority) for priority in priorities],
 ])
 print('总加成倍率：{:.2f}'.format(sum(priorities)))
+
 
 def getNext():
     print('==============')
@@ -328,17 +353,16 @@ def getNext():
     print('各建筑加成倍率', np.round(Rec.builds[1], 2))
     print('升级优先级', np.round(priorities, 2))
 
-last_result=[list(item) for item in last_result]
-now_result=[list(item) for item in layout]
+
+last_result = [list(item) for item in last_result]
+now_result = [list(item) for item in layout]
 for class_num in range(3):
     for item in last_result[class_num][:]:
         if item in now_result[class_num]:
             last_result[class_num].remove(item)
             now_result[class_num].remove(item)
-print(last_result,'被')
-print(now_result,'替换')
+print(last_result, '被')
+print(now_result, '替换')
 
-upgrade_order=np.argsort(priorities)[::-1]
-print('升级顺序:({})'.format(', '.join(
-    layout_list[i] for i in upgrade_order
-)))
+upgrade_order = np.argsort(priorities)[::-1]
+print('升级顺序:({})'.format(', '.join(layout_list[i] for i in upgrade_order)))
