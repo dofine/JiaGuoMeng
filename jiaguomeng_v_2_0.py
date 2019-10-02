@@ -36,8 +36,6 @@ def calculateComb(buildings):
         comboBuff[build] = 1
     for build in buildtuple:
         # print(build, buildsDict[build])
-        if build not in buildsDict:
-            continue
         for buffedBuild, buffMultiple in buildsDict[build]['buff'].items():
             if buffedBuild in buildtuple:
                 comboBuff[buffedBuild] += buffMultiple
