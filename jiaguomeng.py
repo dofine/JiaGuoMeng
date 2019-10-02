@@ -15,15 +15,15 @@ from collections import defaultdict as ddict
 
 #======= 配置：在这里输入自己的状况 =======
 Mode = 'Online'
-last_result = (('平房', '钢结构房', '木屋'), ('学校', '图书城', '民食斋'), ('造纸厂', '木材厂', '钢铁厂'))
+last_result = (('平房', '钢结构房', '木屋'), ('服装店', '五金店', '民食斋'), ('木材厂', '纺织厂', '钢铁厂'))
 
 # 在这里填写你各建筑的星数。
 BuildingDict = {
     # 星数0|1|2|3|4|5, 类型1(住宅)|2(商业)|3(工业)
-    "钢结构房": [2, 1], "木屋": [2, 1], "钢铁厂": [2, 3], "木材厂": [2, 3], "造纸厂": [2, 3],
+    "钢结构房": [2, 1], "木屋": [2, 1], "钢铁厂": [3, 3], "木材厂": [2, 3], "造纸厂": [2, 3],
     "平房": [2, 1], "图书城": [2, 2], "民食斋": [2, 2], "便利店": [2, 2], "食品厂": [2, 3],
-    "纺织厂": [2, 3], "五金店": [2, 2], "服装店": [2, 2], "学校": [1, 2], "居民楼":[ 1, 1],
-    "菜市场": [1, 2]
+    "纺织厂": [2, 3], "五金店": [3, 2], "服装店": [2, 2], "学校": [1, 2], "居民楼":[2, 1],
+    "菜市场": [2, 2], "企鹅机械": [1, 3]
 }
 OneStars = ' '.join([k for k, v in BuildingDict.items() if v[0] == 1])
 TwoStars = ' '.join([k for k, v in BuildingDict.items() if v[0] == 2])
@@ -34,20 +34,20 @@ PenStars = ' '.join([k for k, v in BuildingDict.items() if v[0] == 5])
 # 在这里填写你的政策加成。
 # 没加成为0，有100%加成为1，有150%加成为1.5，以此类推。
 Policy = {
-    'Global': 0.25,
+    'Global': 0.75,
     'Online': 0,
     'Offline': 0,
-    'Residence': 0.75,
-    'Commercial': 0.75,
+    'Residence': 2.25,
+    'Commercial': 2.25,
     'Industry': 0,
-    'JiaGuoZhiGuang': 0.65
+    'JiaGuoZhiGuang': 0
 }
 
 # 在这里填写你的照片加成。
 # 数字的意义见上。
 Photos = {
-    'Global': 0,
-    'Online': 0,
+    'Global': 0.2,
+    'Online': 0.2,
     'Offline': 0,
     'Residence': 0,
     'Commercial': 0,
@@ -57,12 +57,12 @@ Photos = {
 # 在这里填写你的城市任务加成。
 # 数字的意义见上。
 QuestsGeneral = {
-    'Global': 0,
+    'Global': 0.2,
     'Online': 0,
     'Offline': 0,
     'Residence': 0,
     'Commercial': 0,
-    'Industry': 0,
+    'Industry': 0.3,
 }
 QuestsBuilding = {
     # '花园洋房': 0,
@@ -86,11 +86,11 @@ QuestsBuilding = {
     '服装店': 0,
     '木材厂': 0,
     '木屋': 0,
-    '菜市场': 0,
+    '菜市场': 1.5,
     '食品厂': 0,
-    '钢结构房': 1,
+    '钢结构房': 0,
     '造纸厂': 0,
-    '便利店': 0,
+    '便利店': 1.5,
     '五金店': 0,
     '平房': 0,
     '居民楼': 1,
@@ -119,10 +119,11 @@ elif Mode == 'Offline':
     # BlackList = set('小型公寓 电厂'.split())
 
 ListDifference = lambda a, b: [item for item in a if not item in b]
+ListDifference = lambda a, b: list(set(a) - set(b))
 # commercial=ListDifference(commercial.split(),BlackList)
 commercial = set(commercial.split()) - BlackList
 residence = set(residence.split()) - BlackList
-industry = ListDifference(industry.split(), BlackList)
+industry = set(industry.split()) - BlackList
 
 OneStars = ListDifference(OneStars.split(), BlackList)
 TwoStars = ListDifference(TwoStars.split(), BlackList)
