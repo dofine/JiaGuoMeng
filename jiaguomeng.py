@@ -15,23 +15,30 @@ from collections import defaultdict as ddict
 
 #======= 配置：在这里输入自己的状况 =======
 Mode = 'Online'
-last_result = (('平房', '钢结构房', '居民楼'), ('菜市场', '便利店'), ('食品厂', '钢铁厂'))
+last_result = (('平房', '钢结构房', '木屋'), ('学校', '图书城', '民食斋'), ('造纸厂', '木材厂', '钢铁厂'))
 
 # 在这里填写你各建筑的星数。
-OneStars = '便利店 居民楼 钢结构房 平房 菜市场 食品厂 钢铁厂 木屋 五金店 木材厂 造纸厂 纺织厂'
-TwoStars = ''
-TriStars = ''
-QuaStars = ''
-PenStars = ' '
+BuildingDict = {
+    # 星数0|1|2|3|4|5, 类型1(住宅)|2(商业)|3(工业)
+    "钢结构房": [2, 1], "木屋": [2, 1], "钢铁厂": [2, 3], "木材厂": [2, 3], "造纸厂": [2, 3],
+    "平房": [2, 1], "图书城": [2, 2], "民食斋": [2, 2], "便利店": [2, 2], "食品厂": [2, 3],
+    "纺织厂": [2, 3], "五金店": [2, 2], "服装店": [2, 2], "学校": [1, 2], "居民楼":[ 1, 1],
+    "菜市场": [1, 2]
+}
+OneStars = ' '.join([k for k, v in BuildingDict.items() if v[0] == 1])
+TwoStars = ' '.join([k for k, v in BuildingDict.items() if v[0] == 2])
+TriStars = ' '.join([k for k, v in BuildingDict.items() if v[0] == 3])
+QuaStars = ' '.join([k for k, v in BuildingDict.items() if v[0] == 4])
+PenStars = ' '.join([k for k, v in BuildingDict.items() if v[0] == 5])
 
 # 在这里填写你的政策加成。
 # 没加成为0，有100%加成为1，有150%加成为1.5，以此类推。
 Policy = {
-    'Global': 0.1,
+    'Global': 0.25,
     'Online': 0,
     'Offline': 0,
-    'Residence': 0.3,
-    'Commercial': 0,
+    'Residence': 0.75,
+    'Commercial': 0.75,
     'Industry': 0,
     'JiaGuoZhiGuang': 0.65
 }
@@ -39,12 +46,12 @@ Policy = {
 # 在这里填写你的照片加成。
 # 数字的意义见上。
 Photos = {
-    'Global': 0.25 + 0.4,
+    'Global': 0,
     'Online': 0,
     'Offline': 0,
     'Residence': 0,
     'Commercial': 0,
-    'Industry': 0,
+    'Industry': 0.3,
 }
 
 # 在这里填写你的城市任务加成。
@@ -54,26 +61,26 @@ QuestsGeneral = {
     'Online': 0,
     'Offline': 0,
     'Residence': 0,
-    'Commercial': 0.2,
+    'Commercial': 0,
     'Industry': 0,
 }
 QuestsBuilding = {
-    '花园洋房': 0,
-    '空中别墅': 0,
-    '复兴公馆': 0,
-    '商贸中心': 0,
-    '加油站': 0,
-    '人民石油': 0,
-    '媒体之声': 0,
-    '企鹅机械': 0,
-    '中式小楼': 0,
-    '零件厂': 0,
-    '人才公寓': 0,
+    # '花园洋房': 0,
+    # '空中别墅': 0,
+    # '复兴公馆': 0,
+    # '商贸中心': 0,
+    # '加油站': 0,
+    # '人民石油': 0,
+    # '媒体之声': 0,
+    # '企鹅机械': 0,
+    # '中式小楼': 0,
+    # '零件厂': 0,
+    # '人才公寓': 0,
     '民食斋': 0,
     '纺织厂': 0,
     '图书城': 0,
-    '水厂': 0,
-    '电厂': 0,
+    # '水厂': 0,
+    # '电厂': 0,
     '钢铁厂': 0,
     '小型公寓': 0,
     '服装店': 0,
@@ -81,20 +88,23 @@ QuestsBuilding = {
     '木屋': 0,
     '菜市场': 0,
     '食品厂': 0,
-    '钢结构房': 0,
+    '钢结构房': 1,
     '造纸厂': 0,
     '便利店': 0,
     '五金店': 0,
     '平房': 0,
-    '居民楼': 0,
+    '居民楼': 1,
     '学校': 0,
 }
 
 #======= 结束配置 =======
 
-commercial = '便利店 五金店 服装店 菜市场 学校 图书城 商贸中心 加油站 民食斋 媒体之声'
-residence = '木屋 居民楼 钢结构房 平房 小型公寓 人才公寓 花园洋房 中式小楼 空中别墅 复兴公馆'
-industry = '木材厂 食品厂 造纸厂 水厂 电厂 钢铁厂 纺织厂 零件厂 企鹅机械 人民石油'
+# commercial = '便利店 五金店 服装店 菜市场 学校 图书城 商贸中心 加油站 民食斋 媒体之声'
+# residence = '木屋 居民楼 钢结构房 平房 小型公寓 人才公寓 花园洋房 中式小楼 空中别墅 复兴公馆'
+# industry = '木材厂 食品厂 造纸厂 水厂 电厂 钢铁厂 纺织厂 零件厂 企鹅机械 人民石油'
+commercial = ' '.join([k for k, v in BuildingDict.items() if v[1] == 2])
+residence = ' '.join([k for k, v in BuildingDict.items() if v[1] == 1])
+industry = ' '.join([k for k, v in BuildingDict.items() if v[1] == 3])
 
 
 class UndefinedError(Exception):
@@ -106,12 +116,12 @@ if Mode == 'Online':
 elif Mode == 'Offline':
     # TODO:
     raise UndefinedError('离线收益等我有空再写，真的用得到吗')
-    BlackList = set('小型公寓 电厂'.split())
+    # BlackList = set('小型公寓 电厂'.split())
 
 ListDifference = lambda a, b: [item for item in a if not item in b]
 # commercial=ListDifference(commercial.split(),BlackList)
-commercial = (set(commercial.split()) - BlackList)
-residence = ListDifference(residence.split(), BlackList)
+commercial = set(commercial.split()) - BlackList
+residence = set(residence.split()) - BlackList
 industry = ListDifference(industry.split(), BlackList)
 
 OneStars = ListDifference(OneStars.split(), BlackList)
@@ -122,20 +132,12 @@ PenStars = ListDifference(PenStars.split(), BlackList)
 
 #
 star = dict()
-for item in OneStars:
-    star[item] = 1
-for item in TwoStars:
-    star[item] = 2
-for item in TriStars:
-    star[item] = 3
-for item in QuaStars:
-    star[item] = 4
-for item in PenStars:
-    star[item] = 5
+for k, v in BuildingDict.items():
+    star[k] = v[0]
 
 startDict = {1: 1, 2: 2, 3: 6, 4: 24, 5: 120}
 
-######星级 * 政策 * 照片 * 任务
+###### 星级 * 政策 * 照片 * 任务
 start = ddict(int)
 for item in residence:  #住宅
     start[item] = (
