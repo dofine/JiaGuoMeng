@@ -36,36 +36,34 @@ for k in BuildStars.keys():
     在这里填写你的 政策/照片/任务 加成
 '''
 Policy = {
-    'Global': 0.75 + 0.85,
+    'Global': 1,
     'Online': 1,
     'Offline': 1,
     'Residence': 2.25,
     'Business': 2.25,
-    'Industrial': 12,
-    'JiaGuoZhiGuang': 0.85  #国庆也填在这
+    'Industrial': 1,
+    'JiaGuoZhiGuang': 1 #国庆也填在这
 }
 
 Photos = {
-    'Global': 0.2,
-    'Online': 0.2,
-    'Offline': 0,
-    'Residence': 0,
-    'Business': 0.3,
-    'Industrial': 0.3
+    'Global': 0.5,
+    'Online': 0.4,
+    'Offline': 0.6,
+    'Residence': 1.5,
+    'Business': 0.6,
+    'Industrial': 0.6
 }
 
 Tasks_d = {  #如果是100%则填写1
-    '纺织厂': 0,
-    '钢铁厂': 0,
-    '木材厂': 0,
+    '纺织厂': 1.5,
+    '木材厂': 1,
+    '食品厂': 1.5,
     'Global': 0,
     'Online': 0,
     'Offline': 0,
     'Residence': 0,
     'Business': 0,
     'Industrial': 0,
-    '便利店': 1.5,
-    '菜市场': 1.5
 }
 '''
     在这里填写你当前的建筑等级
@@ -76,7 +74,7 @@ Grades = {row[1]['建筑']: int(row[1]['等级']) for row in df.iterrows() if ro
     自动升级功能过几天上线，敬请期待
 '''
 
-TotalGold = '655 M'
+TotalGold = '386 B'
 '''
     以下部分请不要随意改动
 '''
