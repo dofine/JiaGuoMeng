@@ -36,13 +36,13 @@ for k in BuildStars.keys():
     在这里填写你的 政策/照片/任务 加成
 '''
 Policy = {
-    'Global': 1,
-    'Online': 0,
+    'Global': 0.5,
+    'Online': 0.5 + ,
     'Offline': 0,
     'Residence': 3,
-    'Business': 2.25,
-    'Industrial': 1,
-    'JiaGuoZhiGuang': 1 #国庆也填在这
+    'Business': 3,
+    'Industrial': 0.6,
+    'JiaGuoZhiGuang': 1 + 0.95 #国庆也填在这
 }
 
 Photos = {
@@ -55,14 +55,12 @@ Photos = {
 }
 
 Tasks_d = {  #如果是100%则填写1
-    '纺织厂': 1.5,
-    '木材厂': 1,
-    '食品厂': 1.5,
+    '便利店': 1.5
     'Global': 0,
     'Online': 0,
     'Offline': 0,
     'Residence': 0,
-    'Business': 0,
+    'Business': 0.3,
     'Industrial': 0,
 }
 '''
