@@ -37,9 +37,9 @@ for k in BuildStars.keys():
 '''
 Policy = {
     'Global': 1,
-    'Online': 1,
-    'Offline': 1,
-    'Residence': 2.25,
+    'Online': 0,
+    'Offline': 0,
+    'Residence': 3,
     'Business': 2.25,
     'Industrial': 1,
     'JiaGuoZhiGuang': 1 #国庆也填在这
@@ -51,7 +51,7 @@ Photos = {
     'Offline': 0.6,
     'Residence': 1.5,
     'Business': 0.6,
-    'Industrial': 0.6
+    'Industrial': 0.9
 }
 
 Tasks_d = {  #如果是100%则填写1
@@ -71,7 +71,13 @@ Tasks_d = {  #如果是100%则填写1
 Grades = {row[1]['建筑']: int(row[1]['等级']) for row in df.iterrows() if row[1]['等级'] >= 1}
 
 '''
-    自动升级功能过几天上线，敬请期待
+    在这里填写计划投入的金币数
+    格式 数字+空格+单位，比如
+    ‘123.456 aa’
+    可用单位：(G是1, K是1000)
+    游戏内金币单位 G K M B T aa bb cc dd ee ff gg hh ii
+
+    建议初次使用金币不超过当前秒伤的1000倍！
 '''
 
 TotalGold = '386 B'

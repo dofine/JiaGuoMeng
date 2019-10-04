@@ -1,6 +1,8 @@
 # JiaGuoMeng
 家国梦建筑摆放计算
 
+exe版本下载：https://github.com/WANGPeisheng1997/JiaGuoMengCalculator
+
 ## 使用方法
 
 - 搭建python环境
@@ -14,11 +16,22 @@
 	1. 将github代码下载到本地并解压
 	2. **右键点击config.py选择Edit with IDLE根据提示进行个人配置**
 	3. 在cmd中输入：cd 文件夹地址 （如：cd C:\Users\Lawrence\Desktop\JiaGuoMeng）
-	4. **运行jiaguomeng_v_2_0.py(输入：python jiaguomeng_v_2_0.py 并回车)**
+	4. **运行jiaguomeng_v_2_1.py（自动升级版）或者jiaguomeng_v_2_0.py（按当前等级计算）(输入：python jiaguomeng_v_2_1.py 并回车)**
 - 问题
 　　出现其他类似:`ModuleNotFoundError: No module named 'numpy'`的提示，参照环境搭建第六条输入`python -m pip install --user 模块名`并回车
 
+## 配置文件
+在config.py中填写信息，注意：
+
+- 所有政策都要填上去，相同类别的请手动求和后填写
+- 国庆buff可以加在家国之光上
+- 在107行输入你计划投入的金币数(v2.1)，建议第一次运行不超过当前秒伤的1000倍，以免计算量过大
+
 ## 更新记录
+
+10.3更新：
+- 增加了升级计算功能，根据计划投入的金币数计算建筑升级后的属性
+- 优化代码逻辑，不再保存非最优解
 
 10.2更新：
 - 调整算法逻辑，使用当前建筑等级进行计算，更加贴近游戏实际
@@ -38,7 +51,7 @@
 
 - 本项目由我SQRPI（nga: 根派）和校友（nga: 温火融冰）合作完成。
 
-- 温火融冰的前端整合版在：[点击访问](https://github.com/SQRPI/JiaGuoMeng)，大家不要忘记去支持一下点个star哦！
+- 温火融冰的前端整合版在：[点击访问](https://github.com/WANGPeisheng1997/JiaGuoMengCalculator)，大家不要忘记去支持一下点个star哦！
 
 - nga原帖链接：[写了个计算建筑摆放最优策略的脚本](https://bbs.nga.cn/read.php?tid=18677204)
 
